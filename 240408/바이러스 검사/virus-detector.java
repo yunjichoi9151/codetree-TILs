@@ -14,7 +14,7 @@ public class Main {
         st = new StringTokenizer(br.readLine());
         canDo[0] = Integer.parseInt(st.nextToken());
         canDo[1] = Integer.parseInt(st.nextToken());
-        int answer = 0;
+        long answer = 0;
         for(int i = 0; i < n; i++) {
             if(arr[i] > canDo[0]) {
                 arr[i] -= canDo[0];

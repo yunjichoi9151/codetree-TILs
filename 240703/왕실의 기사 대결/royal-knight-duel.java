@@ -69,8 +69,9 @@ public class Main {
             Knight node = que.poll();
             if(dir % 2 == 0) {
                 int nx = (dir == 0) ? (node.x - 1) : (node.x + node.h);
+                if (nx < 0 || nx >= L) return false;
                 for(int j = node.y; j < node.y + node.w; j++) {
-                    if(nx < 0 || nx >= L || map[nx][j] == 2) {
+                    if(j < 0 || j >= L || map[nx][j] == 2) {
                         return false;
                     } else if(visited[mapNow[nx][j]]) {
                         continue;
@@ -81,8 +82,9 @@ public class Main {
                 }
             } else {
                 int ny = (dir == 3) ? (node.y - 1) : (node.y + node.w);
+                if (ny < 0 || ny >= L) return false;
                 for(int i = node.x; i < node.x + node.h; i++) {
-                    if(ny < 0 || ny >= L || map[i][ny] == 2) {
+                    if(i < 0 || i >= L || map[i][ny] == 2) {
                         return false;
                     } else if(visited[mapNow[i][ny]]) {
                         continue;
@@ -101,13 +103,20 @@ public class Main {
         for(int i = 0; i < L; i++) {
             for(int j = 0; j < L; j++) {
                 int nowIdx = mapNow[i][j];
+                if (nowIdx != 0 && knights[nowIdx] == null) {
+                    nowIdx = 0;
+                }
                 if(visited[nowIdx]) {
-                    tmpMap[i + dx[dir]][j + dy[dir]] = nowIdx;
-                    if(map[i + dx[dir]][j + dy[dir]] == 1 && nowIdx != idx) {
-                        knights[nowIdx].k--;
-                        knights[nowIdx].damage++;
-                        if(knights[nowIdx].k <= 0) {
-                            knights[nowIdx] = null;
+                    int newI = i + dx[dir];
+                    int newJ = j + dy[dir];
+                    if (newI >= 0 && newI < L && newJ >= 0 && newJ < L) {
+                        tmpMap[newI][newJ] = nowIdx;
+                        if(map[newI][newJ] == 1 && nowIdx != idx) {
+                            knights[nowIdx].k--;
+                            knights[nowIdx].damage++;
+                            if(knights[nowIdx].k <= 0) {
+                                knights[nowIdx] = null;
+                            }
                         }
                     }
                 } else if(mapNow[i][j] != 0) {
@@ -121,8 +130,9 @@ public class Main {
     static void updateMap(int[][] tmpMap) {
         for(int i = 0; i < L; i++) {
             for(int j = 0; j < L; j++) {
-                if(tmpMap[i][j] != 0 && knights[tmpMap[i][j]] != null) {
-                    mapNow[i][j] = tmpMap[i][j];
+                mapNow[i][j] = tmpMap[i][j];
+                if(tmpMap[i][j] != 0 && knights[tmpMap[i][j]] == null) {
+                    mapNow[i][j] = 0;
                 }
             }
         }
